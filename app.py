@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import plotly.express as px
 
 # Set up the title of your web page
 st.title("💰 Personal Budget Tracker")
@@ -37,3 +39,22 @@ elif savings == 0:
     st.info("You are breaking exactly even.")
 else:
     st.error("Warning: Your expenses exceed your income! ⚠️")
+
+# NEW: Chart Section
+st.subheader("🍕 Expense Breakdown")
+
+# 1. Put the data into a structure the chart library understands (a DataFrame)
+chart_data = pd.DataFrame({
+    "Category": ["Groceries", "Gas", "Entertainment", "Other"],
+    "Amount": [groceries, gas, entertainment, other]
+})
+
+# 2. Check if there are actually expenses to display so we don't crash on $0 total
+if total_expenses > 0:
+    # 3. Create the pie chart using Plotly
+    fig = px.pie(chart_data, values="Amount", names="Category", hole=0.4)
+    
+    # 4. Tell Streamlit to display the chart
+    st.plotly_chart(fig)
+else:
+    st.info("Enter some expenses above to see your chart breakdown!")
